@@ -21,7 +21,11 @@ const ThemeContextProvider = ({ children }: IThemeContextProviderProps) => {
     setDarkMode((prevState) => !prevState);
   };
 
-  return <ThemeContext.Provider value={{ darkMode, toggleDarkMode }}>{children}</ThemeContext.Provider>
+  return (
+    <ThemeContext.Provider value={{ darkMode, toggleDarkMode }}>
+      {children}
+    </ThemeContext.Provider>
+  );
 };
 
 export default ThemeContextProvider;
