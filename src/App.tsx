@@ -1,6 +1,11 @@
-import { useContext } from "react";
+import { useContext, lazy, Suspense } from "react";
 import { ThemeContext } from "./context/theme.context";
 import Navbar from "./components/navbar/Navbar.components";
+import { Routes, Route } from "react-router-dom";
+import CustomLinearProgress from "./components/custom.liner.progress/CustomLinearProgress.component";
+
+const Home = lazy(() => import("./pages/home/Home.page"));
+const Companies = lazy(() => import("./pages/companies/Companies.page"));
 
 const App = () => {
   const { darkMode } = useContext(ThemeContext);
@@ -10,7 +15,16 @@ const App = () => {
   return (
     <div className={appStyles}>
       <Navbar />
-      <div className="wrapper">Routes</div>
+      <div className="wrapper">
+        <Suspense fallback={<CustomLinearProgress />}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/companies">
+              <Route index element={<Companies />} />
+            </Route>
+          </Routes>
+        </Suspense>
+      </div>
     </div>
   );
 };
