@@ -1,7 +1,16 @@
 import { useState } from "react";
 import { ICreateCompanyDto } from "../../types/global.typing";
-import { Button, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import {
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import httpModule from "../../helpers/http.module";
+import "./companies.scss";
 
 const AddCompany = () => {
   const [company, setCompany] = useState<ICreateCompanyDto>({
@@ -10,10 +19,19 @@ const AddCompany = () => {
   });
   const redirect = useNavigate();
 
-  const handleClickSaveBtn = () => {};
+  const handleClickSaveBtn = () => {
+    if (company.name === "" || company.size === "") {
+      alert("Fill all fields");
+      return;
+    }
+    httpModule
+      .post("/Company/Create", company)
+      .then((respons) => redirect("/companies"))
+      .catch((error) => console.log(error));
+  };
   const handleClickBackBtn = () => {
     redirect("/companies");
-  }
+  };
 
   return (
     <div className="content">
@@ -39,12 +57,20 @@ const AddCompany = () => {
           </Select>
         </FormControl>
         <div className="btns">
-            <Button variant="outlined" color="primary" onClick={handleClickSaveBtn}>
-                Save
-            </Button>
-            <Button variant="outlined" color="secondary" onClick={handleClickBackBtn}>
-                Back
-            </Button>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={handleClickSaveBtn}
+          >
+            Save
+          </Button>
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={handleClickBackBtn}
+          >
+            Back
+          </Button>
         </div>
       </div>
     </div>
