@@ -4,7 +4,7 @@ import httpModule from "../../helpers/http.module";
 import { IJob } from "../../types/global.typing";
 import { Button, CircularProgress } from "@mui/material";
 import { Add } from "@mui/icons-material";
-import { redirect, useNavigate } from "react-router-dom";
+import { redirect } from "react-router-dom";
 import JobsGrid from "../../components/jobs/JobsGrid.component";
 
 const Jobs = () => {
@@ -26,7 +26,7 @@ const Jobs = () => {
       });
   }, []);
 
-  console.log(jobs);
+  // console.log(jobs);
 
   return (
     <div className="content jobs">

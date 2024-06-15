@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { ICreateCompanyDto } from "../../types/global.typing";
+import { useState, useEffect } from "react";
+import { ICompany, ICreateJobDto } from "../../types/global.typing";
 import {
   Button,
   FormControl,
@@ -12,48 +12,89 @@ import { useNavigate } from "react-router-dom";
 import httpModule from "../../helpers/http.module";
 import "./jobs.scss";
 
-const AddCompany = () => {
-  const [company, setCompany] = useState<ICreateCompanyDto>({
-    name: "",
-    size: "",
+const levelsArray: string[] = [
+  "Intern",
+  "Junior",
+  "MidLevel",
+  "Senior",
+  "TechLead",
+  "Cto",
+  "Architect",
+];
+
+const AddJob = () => {
+  const [job, setJob] = useState<ICreateJobDto>({
+    title: "",
+    level: "",
+    companyId: "",
   });
+  const [companies, setCompanies] = useState<ICompany[]>([]);
+
   const redirect = useNavigate();
 
+  useEffect(() => {
+    httpModule
+      .get<ICompany[]>("/Company/Get")
+      .then((response) => {
+        setCompanies(response.data);
+      })
+      .catch((error) => {
+        alert("Error");
+        console.log(error);
+      });
+  }, []);
+
   const handleClickSaveBtn = () => {
-    if (company.name === "" || company.size === "") {
+    if (job.title === "" || job.level === "" || job.companyId === "") {
       alert("Fill all fields");
       return;
     }
     httpModule
-      .post("/Company/Create", company)
-      .then((respons) => redirect("/companies"))
+      .post("/Job/Create", job)
+      .then((respons) => redirect("/jobs"))
       .catch((error) => console.log(error));
   };
   const handleClickBackBtn = () => {
-    redirect("/companies");
+    redirect("/jobs");
   };
 
   return (
     <div className="content">
-      <div className="add-company">
-        <h2>Add New Company</h2>
+      <div className="add-job">
+        <h2>Add New Job</h2>
         <TextField
           autoComplete="off"
-          label="Company Name"
+          label="Job Name"
           variant="outlined"
-          value={company.name}
-          onChange={(e) => setCompany({ ...company, name: e.target.value })}
+          value={job.title}
+          onChange={(e) => setJob({ ...job, title: e.target.value })}
         />
         <FormControl fullWidth>
-          <InputLabel>Company Size</InputLabel>
+          <InputLabel>Job Level</InputLabel>
           <Select
-            value={company.size}
-            label="Company Size"
-            onChange={(e) => setCompany({ ...company, size: e.target.value })}
+            value={job.level}
+            label="Job Level"
+            onChange={(e) => setJob({ ...job, level: e.target.value })}
           >
-            <MenuItem value="Small">Small</MenuItem>
-            <MenuItem value="Medium">Medium</MenuItem>
-            <MenuItem value="Large">Large</MenuItem>
+            {levelsArray.map((item) => (
+              <MenuItem key={item} value={item}>
+                {item}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl fullWidth>
+          <InputLabel>Company</InputLabel>
+          <Select
+            value={job.companyId}
+            label="Company"
+            onChange={(e) => setJob({ ...job, companyId: e.target.value })}
+          >
+            {companies.map((item) => (
+              <MenuItem key={item.id} value={item.id}>
+                {item.name}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
         <div className="btns">
@@ -77,4 +118,4 @@ const AddCompany = () => {
   );
 };
 
-export default AddCompany;
+export default AddJob;

@@ -28,7 +28,7 @@ const App = () => {
             </Route>
             <Route path="/jobs">
               <Route index element={<Jobs />} />
-              {/* <Route path="add" element={<AddJob />} /> */}
+              <Route path="add" element={<AddJob />} />
             </Route>
           </Routes>
         </Suspense>
